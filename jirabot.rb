@@ -1,10 +1,10 @@
 require 'slack-ruby-bot'
 
 class JiraBot < SlackRubyBot::Bot
-  match(/((EVENT|ENG|BKS)-[0-9]*)/i) do |client, data, issues|
+  match(/([a-z]+-[0-9]+)/i) do |client, data, issues|
     results = []
-    data.text.scan(/((EVENT|ENG|BKS)-[0-9]*)/i) do |i,j|
-    	results << 'https://ticketfly.jira.com/browse/'+i
+    data.text.scan(/([a-z]+-[0-9]+)/i) do |i,j|
+    	results << 'https://ticketfly.jira.com/browse/'+i.upcase
     end
     client.say(channel: data.channel, text: results.join("\n"))
   end
