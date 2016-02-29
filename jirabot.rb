@@ -7,6 +7,9 @@ class JiraBot < SlackRubyBot::Bot
     
     # Remove links from text, since they're already links, by grabbing everything between < and >
     tomatch = tomatch.sub /(<.+>)/i, ''
+
+    # Also remove emoji, because skin-tone-2 and similar were showing up
+    tomatch = tomatch.sub /:\b\S*\b:/, ''
     
     # Now grab everything that looks like a JIRA ticket, dump it into an array, grab uniques.
     
