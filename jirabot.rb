@@ -1,7 +1,6 @@
 require 'slack-ruby-bot'
 require "net/https"
 require "uri"
-require "JSON"
 
 class JiraBot < SlackRubyBot::Bot
   match(/([a-z]+-[0-9]+)/i) do |client, data, issues|
