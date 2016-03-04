@@ -32,7 +32,7 @@ class JiraBot < SlackRubyBot::Bot
         response = http.request(request)
         body = JSON.parse(response.body)
         if response.code == "200"
-            message = "#{direct}\n\n#{body['fields']['summary']}\n#{body['fields']['issuetype']['name']} (#{body['fields']['status']['name']})"
+            message = "#{ticket}: #{body['fields']['summary']}\n#{direct}\n#{body['fields']['status']['name']} (#{body['fields']['issuetype']['name']})"
         else
             message = direct
         end
