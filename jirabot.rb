@@ -30,12 +30,14 @@ class JiraBot < SlackRubyBot::Bot
         request.basic_auth(ENV["JIRA_USER"],ENV["JIRA_PASS"])
         response = http.request(request)
         body = JSON.parse(response.body)
-        if response.code == "200"
-            message = "#{ticket}: #{body['fields']['summary']}\n#{direct}\n#{body['fields']['status']['name']} (#{body['fields']['issuetype']['name']})"
-        else
-            message = direct
+        if response.code != "404"
+            if response.code == "200"
+                message = "#{ticket}: #{body['fields']['summary']}\n#{direct}\n#{body['fields']['status']['name']} (#{body['fields']['issuetype']['name']})"
+            else
+                message = direct
+            end
+            client.say(channel: data.channel, text: message)
         end
-        client.say(channel: data.channel, text: message)
     end
 
 
