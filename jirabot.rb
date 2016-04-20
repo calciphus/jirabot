@@ -4,11 +4,13 @@ require "uri"
 
 class JiraBot < SlackRubyBot::Bot
   match(/([a-z]+-[0-9]+)/i) do |client, data, issues|
+    puts data.text
     results = []
     tomatch = data.text
     
     # Remove links from text, since they're already links, by grabbing everything between < and >
-    tomatch = tomatch.sub /(<.+>)/i, ''
+    # tomatch = tomatch.sub /(<.+>)/i, ''
+    # Removed because links could still be useful now
 
     # Also remove emoji, because skin-tone-2 and similar were showing up
     tomatch = tomatch.sub /:\b\S*\b:/, ''
@@ -32,7 +34,12 @@ class JiraBot < SlackRubyBot::Bot
         body = JSON.parse(response.body)
         if response.code != "404"
             if response.code == "200"
-                message = "#{ticket}: #{body['fields']['summary']}\n#{direct}\n#{body['fields']['status']['name']} (#{body['fields']['issuetype']['name']})"
+                # Check if this is already a link in the message. If so, don't bother sending a link
+                if tomatch.include?(direct)
+                    message = "#{ticket}: #{body['fields']['summary']}\n#{body['fields']['status']['name']} (#{body['fields']['issuetype']['name']})"
+                else
+                    message = "#{ticket}: #{body['fields']['summary']}\n#{direct}\n#{body['fields']['status']['name']} (#{body['fields']['issuetype']['name']})"
+                end
             else
                 message = direct
             end
